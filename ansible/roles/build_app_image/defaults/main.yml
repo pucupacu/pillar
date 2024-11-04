@@ -1,0 +1,10 @@
+api_app_name: Pillar API v1
+
+api_container_name: pillar-api-v1
+
+api_image_name: pillar/api/v1
+api_image_tag: alpha
+api_image_dockerfile_path: "{{ role_path }}/files"
+
+api_code_src_dir: "{{ role_path }}/../../../src/"
+api_code_dst_dir: "{{ role_path }}/files/src/"
