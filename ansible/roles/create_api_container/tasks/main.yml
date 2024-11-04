@@ -1,4 +1,6 @@
 ---
+- include_tasks: prereq.yml
+
 - name: "{{ api_app_name }} | Build and run API image"
   block:
   - name: "{{ api_app_name }} Copy API source code to {{ api_code_dst_dir }}"

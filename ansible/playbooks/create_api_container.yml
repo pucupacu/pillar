@@ -1,0 +1,5 @@
+- name: Create Pillar API container
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - ../roles/create_api_container

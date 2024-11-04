@@ -1,0 +1,39 @@
+---
+- name: "{{ api_app_name }} | Get API container info"
+  community.docker.docker_container_info:
+    name: "{{ api_container_name}}"
+  register: container_info
+
+- name: "{{ api_app_name }} | Does container exist?"
+  ansible.builtin.set_fact:
+    container_exists: "{{ container_info.exists }}"
+
+- name: "{{ api_app_name }} | Get API image info"
+  community.docker.docker_image_info:
+    name: "{{ api_image_name }}:{{ api_image_tag }}"
+  register: image_info
+
+- name: "{{ api_app_name }} | Does image exist?"
+  ansible.builtin.set_fact:
+    image_exists: "{{ image_info.images | length == 1 }}"
+
+- name: "{{ api_app_name }} | Stop and delete container if exists"
+  block:
+  - name: "{{ api_app_name }} | Stop API container"
+    community.docker.docker_container:
+      name: "{{ api_container_name}}"
+      state: stopped
+
+  - name: "{{ api_app_name }} | Delete API container"
+    community.docker.docker_container:
+      name: "{{ api_container_name}}"
+      state: absent
+
+  when: container_exists
+
+- name: "{{ api_app_name }} | Delete API container image if exists"
+  community.docker.docker_image:
+    name: "{{ api_image_name }}"
+    tag: "{{ api_image_tag }}"
+    state: absent
+  when: image_exists

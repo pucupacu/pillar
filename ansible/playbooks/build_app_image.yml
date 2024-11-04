@@ -1,5 +1,0 @@
-- name: Build Pillar Api Image
-  hosts: localhost
-  gather_facts: false
-  roles:
-    - ../roles/build_app_image
