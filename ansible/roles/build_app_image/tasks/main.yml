@@ -1,0 +1,28 @@
+---
+- name: "{{ api_app_name }} | Build and run API image"
+  block:
+  - name: "{{ api_app_name }} Copy API source code to {{ api_code_dst_dir }}"
+    ansible.builtin.copy:
+      src: "{{ api_code_src_dir }}"
+      dest: "{{ api_code_dst_dir }}"
+
+  - name: "{{ api_app_name }} | Build API image"
+    community.docker.docker_image_build:
+      name: "{{ api_image_name }}"
+      tag: "{{ api_image_tag }}"
+      path: "{{ api_image_dockerfile_path }}"
+      nocache: true
+
+  - name: "{{ api_app_name }} | Start API container"
+    community.docker.docker_container:
+      name: "{{ api_container_name }}"
+      image: "{{ api_image_name }}:{{ api_image_tag }}"
+      ports:
+      - "8080:80"
+      state: started
+
+  always:
+    - name: "{{ api_app_name }} | Cleanup"
+      ansible.builtin.file:
+        path: "{{ api_code_dst_dir }}"
+        state: absent
