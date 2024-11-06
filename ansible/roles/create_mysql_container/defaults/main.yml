@@ -1,0 +1,12 @@
+app_name: MySQL DB
+
+container_name: pillar-mysql
+
+image_name: mysql
+image_tag: 9.1.0
+image_full_name: "{{ mysql_image_name }}:{{ mysql_image_tag }}"
+
+active_ports_mapping:
+  # - container_port:host_port
+  - "3306:3306"
+  - "8080:80"

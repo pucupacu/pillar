@@ -37,3 +37,8 @@
     tag: "{{ api_image_tag }}"
     state: absent
   when: image_exists
+
+
+
+---
+- ansible.builtin.include_tasks: "{{ mode }}.yml"

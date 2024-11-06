@@ -1,0 +1,39 @@
+---
+- name: "{{ service_name }} | Get {{ container_name }} container info"
+  community.docker.docker_container_info:
+    name: "{{ container_name }}"
+  register: container_info
+
+- name: "{{ service_name }} | Does {{ container_name }} container exist?"
+  ansible.builtin.set_fact:
+    container_exists: "{{ container_info.exists }}"
+
+- name: "{{ service_name }} | Get {{ image_name }} image info"
+  community.docker.docker_image_info:
+    name: "{{ full_image_name }}"
+  register: image_info
+
+- name: "{{ service_name }} | Does image exist?"
+  ansible.builtin.set_fact:
+    image_exists: "{{ image_info.images | length == 1 }}"
+
+- name: "{{ service_name }} | Stop and delete {{ container_name }} container if exists"
+  block:
+  - name: "{{ service_name }} | Stop {{ container_name }} container"
+    community.docker.docker_container:
+      name: "{{ container_name }}"
+      state: stopped
+
+  - name: "{{ service_name }} | Delete {{ container_name }} container"
+    community.docker.docker_container:
+      name: "{{ container_name }}"
+      state: absent
+
+  when: container_exists
+
+- name: "{{ service_name }} | Delete {{ image_name }} image if exists"
+  community.docker.docker_image:
+    name: "{{ image_name }}"
+    tag: "{{ image_tag }}"
+    state: absent
+  when: image_exists

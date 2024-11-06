@@ -1,0 +1,17 @@
+---
+- name: "{{ app_name }} | Build and run API image"
+  block:
+  - name: "{{ app_name }} Copy API source code to {{ code_dst_dir }}"
+    ansible.builtin.copy:
+      src: "{{ code_src_dir }}"
+      dest: "{{ code_dst_dir }}"
+
+  - name: "{{ app_name }} | Build image and run container"
+    ansible.builtin.include_role:
+      name: "{{ role_path }}/../common/container"
+
+  always:
+    - name: "{{ app_name }} | Cleanup"
+      ansible.builtin.file:
+        path: "{{ code_dst_dir }}"
+        state: absent
