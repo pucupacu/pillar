@@ -1,0 +1,4 @@
+---
+- name: "{{ app_name }} | Build image and run container"
+  ansible.builtin.include_role:
+    name: "{{ role_path }}/../common/container"

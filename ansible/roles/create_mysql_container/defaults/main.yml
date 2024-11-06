@@ -4,9 +4,9 @@ container_name: pillar-mysql
 
 image_name: mysql
 image_tag: 9.1.0
-image_full_name: "{{ mysql_image_name }}:{{ mysql_image_tag }}"
+image_full_name: "{{ image_name }}:{{ image_tag }}"
+image_dockerfile_path: "{{ role_path }}/files"
 
 active_ports_mapping:
   # - container_port:host_port
   - "3306:3306"
-  - "8080:80"

@@ -1,24 +1,14 @@
 ---
+- name: "{{ service_name }} | Build {{ image_name }} image"
+  community.docker.docker_image_build:
+    name: "{{ image_name }}"
+    tag: "{{ image_tag }}"
+    path: "{{ image_dockerfile_path }}"
+    nocache: true
 
-- name: Debug vars
-  ansible.builtin.debug:
-    msg: | 
-      - "{{ container_name }}"
-      - {{ image_name }}"
-      - {{ image_tag }}"
-      - {{ image_full_name }}"
-      - {{ container_name }}"
-
-# - name: "{{ service_name }} | Build {{ image_name }} image"
-#   community.docker.docker_image_build:
-#     name: "{{ image_name }}"
-#     tag: "{{ image_tag }}"
-#     path: "{{ image_dockerfile_path }}"
-#     nocache: true
-
-# - name: "{{ service_name }} | Start {{ container_name }} container"
-#   community.docker.docker_container:
-#     name: "{{ container_name }}"
-#     image: "{{ full_image_name }}"
-#     ports: "{{ active_ports_mapping }}"
-#     state: started
+- name: "{{ service_name }} | Start {{ container_name }} container"
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    image: "{{ full_image_name }}"
+    ports: "{{ active_ports_mapping }}"
+    state: started

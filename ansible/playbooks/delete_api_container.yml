@@ -1,5 +1,5 @@
 - name: Delete Pillar API container
-  hosts: localhost
+  hosts: local
   gather_facts: false
   roles:
     - ../roles/api_container
