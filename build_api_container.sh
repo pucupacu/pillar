@@ -23,13 +23,18 @@ fi
 
 # Function to stop and remove the container
 function stop_container() {
-    docker stop $CONTAINER_NAME >/dev/null 2>&1 || true
-    docker rm $CONTAINER_NAME >/dev/null 2>&1 || true
+    docker container stop $CONTAINER_NAME >/dev/null 2>&1 || true
+    docker container rm $CONTAINER_NAME >/dev/null 2>&1 || true
 }
 
 # Function to remove the Docker image
 function remove_image() {
-    docker rmi $IMAGE_NAME >/dev/null 2>&1 || true
+    docker image rm $IMAGE_NAME >/dev/null 2>&1 || true
+}
+
+# Function to remove dangling images
+function remove_dangling_images() {
+    docker image prune -f --filter "dangling=true" >/dev/null 2>&1 || true
 }
 
 # Handle script options
@@ -37,10 +42,13 @@ case "$1" in
     --rebuild)
         stop_container
         remove_image
+        remove_dangling_images
+        # Now skip to build and run
         ;;
     --cleanup)
         stop_container
         remove_image
+        remove_dangling_images
         echo "Cleanup complete."
         exit 0
         ;;
