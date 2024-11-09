@@ -27,4 +27,6 @@ todo:
 
 - [ ] draw app wireframe
 
-- [ ] fix docker image so it builds without cache
+- [ ] drop using docker
+- [ ] refactor ansible code to spawn ec2 instance with appropriate user-script to host python api
+- [ ] setup github actions job to deploy api to the ec2 instance on demand
