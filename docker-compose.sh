@@ -3,7 +3,6 @@
 # ==============================================================================
 # Configuration
 COMPOSE_FILE="docker/docker-compose.yml"
-SERVICE_NAME="pillar-api-v1"
 
 # ==============================================================================
 # Function to display usage
