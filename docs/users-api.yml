@@ -1,0 +1,213 @@
+openapi: 3.0.0
+info:
+  title: Pillar Users API
+  description: API for managing user accounts and profile settings
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+paths:
+  /users:
+    get:
+      summary: Returns a list of users
+      responses:
+        "200":
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /users/register:
+    post:
+      summary: Register a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "201":
+          description: User registered successfully
+        "400":
+          description: Bad request
+
+  /users/login:
+    post:
+      summary: Log in with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: User logged in successfully
+        "401":
+          description: Unauthorized
+
+  /users/{id}:
+    get:
+      summary: Get user profile information
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+            maxItems: 1
+      responses:
+        "200":
+          description: User profile retrieved successfully
+
+  /users/{id}/logout:
+    post:
+      summary: Log out of the account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+            maxItems: 1
+      responses:
+        "200":
+          description: User logged out successfully
+
+  /users/{id}/password:
+    put:
+      summary: Change the password
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+            maxItems: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                new_password:
+                  type: string
+      responses:
+        "200":
+          description: Password changed successfully
+        "400":
+          description: Bad request
+
+  /users/{id}/edit:
+    put:
+      summary: Edit personal information
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+            maxItems: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        "200":
+          description: Profile updated successfully
+        "400":
+          description: Bad request
+
+  /users/{id}/delete:
+    delete:
+      summary: Delete the account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+            minItems: 1
+            maxItems: 1
+      responses:
+        "200":
+          description: Account deleted successfully
+        "401":
+          description: Unauthorized
+
+  /users/resetPassword:
+    post:
+      summary: Request a password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: Password reset request successful
+
+  /users/resetPassword/confirm:
+    post:
+      summary: Confirm password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                new_password:
+                  type: string
+      responses:
+        "200":
+          description: Password reset successful
+        "400":
+          description: Invalid token
