@@ -1,18 +1,17 @@
 #!/bin/bash
 
-# Container and image names for reusability
-CONTAINER_NAME="pillar-api-v1"
-IMAGE_NAME="pillar/api/v1"
-DOCKERFILE_PATH="docker/api-dockerfile"
-
+# ==============================================================================
+# Configuration
+COMPOSE_FILE="docker/docker-compose.yml"
+SERVICE_NAME="pillar-api-v1"
 
 # ==============================================================================
 # Function to display usage
 function usage() {
     echo "Usage: $0 [--rebuild] [--cleanup]"
     echo "Options:"
-    echo "  --rebuild   Rebuild the Docker image and restart the container"
-    echo "  --cleanup   Stop and remove the container and image, then exit"
+    echo "  --rebuild   Rebuild the Docker image and restart the container using docker-compose"
+    echo "  --cleanup   Stop and remove all containers, networks, and volumes for the service"
     exit 1
 }
 
@@ -21,51 +20,29 @@ if [[ $# -gt 1 ]]; then
     usage
 fi
 
-# Function to stop and remove the container
-function stop_container() {
-    docker container stop $CONTAINER_NAME >/dev/null 2>&1 || true
-    docker container rm $CONTAINER_NAME >/dev/null 2>&1 || true
-}
-
-# Function to remove the Docker image
-function remove_image() {
-    docker image rm $IMAGE_NAME >/dev/null 2>&1 || true
-}
-
-# Function to remove dangling images
-function remove_dangling_images() {
-    docker image prune -f --filter "dangling=true" >/dev/null 2>&1 || true
-}
-
 # Handle script options
 case "$1" in
     --rebuild)
-        stop_container
-        remove_image
-        remove_dangling_images
-        # Now skip to build and run
+        echo "Rebuilding and restarting services..."
+        docker-compose -f $COMPOSE_FILE down
+        docker-compose -f $COMPOSE_FILE build --no-cache
+        docker-compose -f $COMPOSE_FILE up -d
         ;;
     --cleanup)
-        stop_container
-        remove_image
-        remove_dangling_images
+        echo "Cleaning up..."
+        docker-compose -f $COMPOSE_FILE down --rmi all --volumes --remove-orphans
+        yes | docker image prune
         echo "Cleanup complete."
         exit 0
         ;;
     "")
-        ;; # No option passed, proceed to build and run
+        echo "Starting services..."
+        docker-compose -f $COMPOSE_FILE up -d
+        ;;
     *)
         usage
         ;;
 esac
 
-# Build the Docker image, with cache control if needed
-echo "Building Docker image..."
-docker build --no-cache -t $IMAGE_NAME -f $DOCKERFILE_PATH .
-
-# Run the Docker container
-echo "Starting Docker container..."
-docker run -d --name $CONTAINER_NAME -p 8080:80 $IMAGE_NAME
-
-# Show container status
-docker ps -f name=$CONTAINER_NAME
+# Show containers status
+docker-compose -f $COMPOSE_FILE ps

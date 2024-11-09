@@ -1,0 +1,29 @@
+services:
+  pillar-api-v1:
+    build:
+      context: ../
+      dockerfile: docker/api-dockerfile
+    ports:
+      - "8080:80"
+    # environment:
+    #   - DATABASE_URL=mysql://user:password@mysql:3306/dbname
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:9.1
+    env_file:
+      - path: ../.env
+        required: true
+    environment:
+      MYSQL_ROOT_PASSWORD: $(MYSQL_ROOT_PASSWORD)
+      MYSQL_DATABASE: $(MYSQL_DATABASE)
+      MYSQL_USER: $(MYSQL_USER)
+      MYSQL_PASSWORD: $(MYSQL_PASSWORD)
+    ports:
+      - "3306:3306"
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+
+# volumes:
+#   mysql_data:
